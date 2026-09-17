@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: photo-sharing-platform
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/photoshare?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 100MB
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:this-is-a-dev-only-secret-key-change-me-before-deploying-1234567890}
+    expiration-ms: 86400000
+
+  public-base-url: ${APP_PUBLIC_BASE_URL:http://localhost:8080}
+
+  storage:
+    provider: ${APP_STORAGE_PROVIDER:cloudinary}
+
+    local:
+      dir: ${APP_STORAGE_LOCAL_DIR:./uploads}
+      public-base-url: ${APP_PUBLIC_BASE_URL:http://localhost:8080}/uploads
+
+    s3:
+      bucket: ${APP_S3_BUCKET:}
+      region: ${APP_AWS_REGION:ap-south-1}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+logging:
+  level:
+    com.trizenai.photoshare: INFO

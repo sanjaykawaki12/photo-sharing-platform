@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Dashboard · Photo Sharing Platform</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="brand-icon">◉</span> Photo Sharing Platform</div>
+  <div class="user-info">
+    <span id="userName"></span>
+    <span class="badge member">TEAM MEMBER</span>
+    <button class="secondary small" onclick="logout()">Log out</button>
+  </div>
+</div>
+
+<div class="container">
+  <div id="eventListView">
+    <div class="page-head">
+      <div>
+        <h1>Your Assigned Events</h1>
+        <p class="subtitle">Select an event to upload your photos.</p>
+      </div>
+    </div>
+    <div id="eventsContainer"></div>
+  </div>
+
+  <div id="eventDetailView" style="display:none;">
+    <button class="secondary small" onclick="backToList()">← Back to events</button>
+    <h1 id="detailEventName"></h1>
+
+    <div class="card">
+      <h2>Upload Photos</h2>
+      <p class="subtitle" style="margin:6px 0 18px;">JPEG, PNG or WEBP · up to 25MB each</p>
+      <div id="uploadAlert" class="alert error" style="display:none;"></div>
+      <label for="photoFiles">Choose photos</label>
+      <input type="file" id="photoFiles" multiple accept="image/*">
+      <button onclick="uploadPhotos()" style="margin-top:12px;">Upload Photos</button>
+    </div>
+
+    <div class="card">
+      <h2>My Uploads</h2>
+      <p class="subtitle" style="margin:6px 0 18px;">Photos uploaded to this event.</p>
+      <div id="photosGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/team.js"></script>
+</body>
+</html>

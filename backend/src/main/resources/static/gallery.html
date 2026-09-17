@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery · Photo Sharing Platform</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="brand-icon">◉</span> Photo Sharing Platform</div>
+  <div class="user-info"><a href="index.html">Team / Admin sign in</a></div>
+</div>
+
+<div class="container">
+  <div id="pinView" class="narrow">
+    <div class="card">
+      <div class="eyebrow" style="color:var(--gold2);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">Private gallery</div>
+      <h1 style="margin-top:8px;">View Your Gallery</h1>
+      <p class="subtitle" style="margin:10px 0 24px;">Enter the link code and PIN you received from your photographer.</p>
+
+      <div id="pinAlert" class="alert error" style="display:none;"></div>
+
+      <label for="linkCode">Gallery Link Code</label>
+      <input type="text" id="linkCode" placeholder="e.g. abc123de">
+
+      <label for="pin" style="margin-top:16px;">PIN</label>
+      <input type="text" id="pin" placeholder="6-digit PIN" inputmode="numeric">
+
+      <button style="width:100%;margin-top:16px;" onclick="viewGallery()">Open Gallery&nbsp; →</button>
+    </div>
+  </div>
+
+  <div id="galleryView" style="display:none;">
+    <h1 id="galleryTitle"></h1>
+    <p class="subtitle" id="galleryCount"></p>
+    <div id="galleryGrid"></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/gallery.js"></script>
+</body>
+</html>

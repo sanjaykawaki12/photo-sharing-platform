@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: false
+
+app:
+  public-base-url: ${APP_PUBLIC_BASE_URL}
+
+  jwt:
+    secret: ${APP_JWT_SECRET}
+    expiration-ms: 86400000
+
+  storage:
+    provider: ${APP_STORAGE_PROVIDER:cloudinary}
+
+    local:
+      dir: ${APP_STORAGE_LOCAL_DIR:./uploads}
+      public-base-url: ${APP_PUBLIC_BASE_URL}/uploads
+
+    s3:
+      bucket: ${APP_S3_BUCKET:}
+      region: ${APP_AWS_REGION:ap-south-1}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+logging:
+  level:
+    com.trizenai.photoshare: INFO

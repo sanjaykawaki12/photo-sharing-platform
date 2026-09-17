@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In · Photo Sharing Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="auth-page">
+
+    <!-- LEFT VISUAL -->
+    <div class="auth-visual">
+
+        <div class="auth-brand">
+            <span>◉</span>
+            Photo Sharing Platform
+        </div>
+
+        <div class="auth-copy">
+            <div class="eyebrow">
+                Capture · Share · Cherish
+            </div>
+
+            <h2>
+                Stories worth<br>
+                remembering.
+            </h2>
+
+            <p>
+                Bring your event photos together,
+                curate the best moments,
+                and share them beautifully.
+            </p>
+
+            <span class="line"></span>
+        </div>
+
+    </div>
+
+
+    <!-- LOGIN PANEL -->
+    <div class="auth-panel">
+
+        <div class="auth-box">
+
+            <div class="eyebrow">
+                Welcome back
+            </div>
+
+            <h1>
+                Sign In
+            </h1>
+
+            <p class="subtitle">
+                Continue to your photography workspace.
+            </p>
+
+
+            <!-- ROLE SELECTOR -->
+            <div
+                    class="role-tabs"
+                    aria-label="Choose account type"
+            >
+
+                <!-- ADMIN -->
+                <button
+                        type="button"
+                        class="role-tab active"
+                        id="adminTab"
+                        onclick="selectRole('ADMIN')"
+                >
+
+                    <span class="role-icon">
+                        ♛
+                    </span>
+
+                    <span>
+
+                        <strong>
+                            Admin / Lead
+                        </strong>
+
+                        <small>
+                            Manage events & galleries
+                        </small>
+
+                    </span>
+
+                </button>
+
+
+                <!-- TEAM MEMBER -->
+                <button
+                        type="button"
+                        class="role-tab"
+                        id="memberTab"
+                        onclick="selectRole('TEAM_MEMBER')"
+                >
+
+                    <span class="role-icon">
+                        ◈
+                    </span>
+
+                    <span>
+
+                        <strong>
+                            Team Member
+                        </strong>
+
+                        <small>
+                            Upload & manage photos
+                        </small>
+
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- SELECTED ROLE -->
+            <div class="selected-role">
+
+                <span class="status-dot"></span>
+
+                <span id="selectedRoleText">
+                    Signing in as Admin / Lead
+                </span>
+
+            </div>
+
+
+            <!-- ALERT -->
+            <div
+                    id="alert"
+                    class="alert error"
+                    style="display:none;"
+            ></div>
+
+
+            <!-- LOGIN FORM -->
+            <form
+                    id="loginForm"
+                    class="auth-form"
+            >
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                        type="email"
+                        id="email"
+                        required
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                >
+
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                        type="password"
+                        id="password"
+                        required
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                >
+
+
+                <button
+                        type="submit"
+                        class="login-button"
+                        id="loginButton"
+                >
+
+                    <span id="loginButtonText">
+                        Continue as Admin
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <!-- FOOTER -->
+            <div class="auth-footer">
+
+                New here?
+                <a href="register.html">
+                    Create an account
+                </a>
+
+                <br>
+                <br>
+
+                Have a gallery link?
+                <a href="gallery.html">
+                    Open shared gallery
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="js/api.js"></script>
+
+<script>
+
+    // Default role
+    let selectedRole = "ADMIN";
+
+
+    // =========================================================
+    // ROLE SELECT
+    // =========================================================
+
+    function selectRole(role) {
+
+        selectedRole = role;
+
+        const adminTab =
+            document.getElementById("adminTab");
+
+        const memberTab =
+            document.getElementById("memberTab");
+
+        const roleText =
+            document.getElementById("selectedRoleText");
+
+        const buttonText =
+            document.getElementById("loginButtonText");
+
+
+        // Remove active state
+        adminTab.classList.remove("active");
+        memberTab.classList.remove("active");
+
+
+        if (role === "ADMIN") {
+
+            adminTab.classList.add("active");
+
+            roleText.textContent =
+                "Signing in as Admin / Lead";
+
+            buttonText.textContent =
+                "Continue as Admin";
+
+        } else {
+
+            memberTab.classList.add("active");
+
+            roleText.textContent =
+                "Signing in as Team Member";
+
+            buttonText.textContent =
+                "Continue as Team Member";
+        }
+    }
+
+
+    // =========================================================
+    // LOGIN
+    // =========================================================
+
+    document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            hideAlert("alert");
+
+
+            const email =
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            try {
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * Selected role is now sent to backend.
+                 *
+                 * Backend will verify:
+                 *
+                 * Admin account + ADMIN tab
+                 *        -> allowed
+                 *
+                 * Admin account + TEAM_MEMBER tab
+                 *        -> rejected
+                 *
+                 * Team Member account + TEAM_MEMBER tab
+                 *        -> allowed
+                 *
+                 * Team Member account + ADMIN tab
+                 *        -> rejected
+                 */
+
+                const data =
+                    await apiRequest(
+                        "/api/auth/login",
+                        {
+                            method: "POST",
+
+                            body: {
+                                email: email,
+                                password: password,
+                                role: selectedRole
+                            }
+                        }
+                    );
+
+
+                // Save authenticated session
+                Auth.setSession(
+                    data.token,
+                    {
+                        id: data.userId,
+                        name: data.name,
+                        email: data.email,
+                        role: data.role
+                    }
+                );
+
+
+                // Redirect based on verified backend role
+                if (data.role === "ADMIN") {
+
+                    window.location.href =
+                        "admin-dashboard.html";
+
+                } else if (
+                    data.role === "TEAM_MEMBER"
+                ) {
+
+                    window.location.href =
+                        "team-dashboard.html";
+
+                } else {
+
+                    Auth.clear();
+
+                    showAlert(
+                        "alert",
+                        "Invalid account role."
+                    );
+                }
+
+            } catch (err) {
+
+                showAlert(
+                    "alert",
+                    err.message
+                );
+            }
+
+        });
+
+</script>
+
+</body>
+</html>

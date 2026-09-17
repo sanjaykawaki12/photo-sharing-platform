@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard · Photo Sharing Platform</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="brand-icon">◉</span> Photo Sharing Platform</div>
+  <div class="user-info">
+    <span id="userName"></span>
+    <span class="badge admin">ADMIN</span>
+    <button class="secondary small" onclick="logout()">Log out</button>
+  </div>
+</div>
+
+<div class="container">
+  <div id="eventListView">
+    <div class="page-head">
+      <div>
+        <h1>Your Events</h1>
+        <p class="subtitle">Create an event, add your team, and publish a gallery once photos are selected.</p>
+      </div>
+      <button type="button" onclick="document.getElementById('eventName').focus()">＋ Create New Event</button>
+    </div>
+
+    <div class="card">
+      <h2>Create New Event</h2>
+      <p class="subtitle" style="margin:6px 0 18px;">Start a new collection for your next story.</p>
+      <div id="createAlert" class="alert error" style="display:none;"></div>
+      <form id="createEventForm">
+        <div>
+          <label for="eventName">Event Name</label>
+          <input type="text" id="eventName" required placeholder="e.g. Arjun & Priya Wedding">
+        </div>
+        <button type="submit">Create Event</button>
+      </form>
+    </div>
+
+    <div style="margin-top:18px;">
+      <h2 style="margin-bottom:12px;">Existing Events</h2>
+      <div id="eventsContainer"></div>
+    </div>
+  </div>
+
+  <div id="eventDetailView" style="display:none;">
+    <button class="secondary small" onclick="backToList()">← Back to events</button>
+    <h1 id="detailEventName"></h1>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="members" onclick="switchTab('members')">Team Members</button>
+      <button class="tab" data-tab="photos" onclick="switchTab('photos')">Review Photos</button>
+      <button class="tab" data-tab="publish" onclick="switchTab('publish')">Publish Gallery</button>
+    </div>
+
+    <div id="tab-members" class="card">
+      <h2>Team Members</h2>
+      <p class="subtitle" style="margin:6px 0 18px;">Add registered team members to this event.</p>
+      <div id="memberAlert" class="alert error" style="display:none;"></div>
+      <form id="addMemberForm">
+        <div>
+          <label for="memberEmail">Team member's registered email</label>
+          <input type="email" id="memberEmail" required placeholder="member@example.com">
+        </div>
+        <button type="submit">Add Member</button>
+      </form>
+      <table style="margin-top:18px;">
+        <thead><tr><th>Name</th><th>Email</th></tr></thead>
+        <tbody id="membersTableBody"></tbody>
+      </table>
+    </div>
+
+    <div id="tab-photos" class="card" style="display:none;">
+      <h2>Review &amp; Select Photos</h2>
+      <p class="subtitle" id="photoCounts" style="margin:6px 0 18px;"></p>
+      <div id="photoAlert" class="alert error" style="display:none;"></div>
+      <div>
+        <button class="secondary small" onclick="bulkSelect(true)">Select All</button>
+        <button class="secondary small" onclick="bulkSelect(false)">Deselect All</button>
+        <button class="small" onclick="saveSelection()">Save Selection</button>
+      </div>
+      <div id="photosGrid" style="margin-top:16px;"></div>
+    </div>
+
+    <div id="tab-publish" class="card" style="display:none;">
+      <h2>Publish Gallery</h2>
+      <p class="subtitle" style="margin:6px 0 18px;">Create a private customer gallery with a shareable link and PIN.</p>
+      <div id="publishAlert" class="alert error" style="display:none;"></div>
+      <label for="customPin">Custom PIN (optional, 4–8 digits)</label>
+      <input type="text" id="customPin" placeholder="Leave blank to auto-generate">
+      <button onclick="publishGallery()" style="margin-top:12px;">Publish Gallery</button>
+      <div id="publishResult" style="display:none;" class="credential-box">
+        <strong>Gallery published successfully.</strong><br><br>
+        Link: <code id="resultLink"></code><br>
+        PIN: <code id="resultPin"></code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/admin.js"></script>
+<script>
+    document.addEventListener("click", function (e) {
+
+        const image = e.target.closest("#photosGrid .photo-card img");
+
+        if (!image) return;
+
+        // Don't open preview when clicking checkbox
+        if (e.target.type === "checkbox") return;
+
+        const overlay = document.createElement("div");
+        overlay.className = "photo-lightbox";
+
+        const closeButton = document.createElement("button");
+        closeButton.className = "photo-lightbox-close";
+        closeButton.innerHTML = "&times;";
+        closeButton.setAttribute("aria-label", "Close preview");
+
+        const largeImage = document.createElement("img");
+        largeImage.src = image.src;
+        largeImage.alt = image.alt || "Photo preview";
+
+        overlay.appendChild(largeImage);
+        overlay.appendChild(closeButton);
+
+        document.body.appendChild(overlay);
+
+        document.body.style.overflow = "hidden";
+
+        function closePreview() {
+            overlay.remove();
+            document.body.style.overflow = "";
+        }
+
+        closeButton.addEventListener("click", closePreview);
+
+        overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+                closePreview();
+            }
+        });
+
+        document.addEventListener("keydown", function escHandler(event) {
+            if (event.key === "Escape") {
+                closePreview();
+                document.removeEventListener("keydown", escHandler);
+            }
+        });
+    });
+</script>
+</body>
+</html>

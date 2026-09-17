@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account · Photo Sharing Platform</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-visual">
+    <div class="auth-brand"><span>◉</span> Photo Sharing Platform</div>
+    <div class="auth-copy">
+      <div class="eyebrow">Your stories. Your workspace.</div>
+      <h2>Create a place<br>for every moment.</h2>
+      <p>Organize event photography, collaborate with your team, and deliver beautiful galleries.</p>
+      <span class="line"></span>
+    </div>
+  </div>
+
+  <div class="auth-panel">
+    <div class="auth-box">
+      <div class="eyebrow">Get started</div>
+      <h1>Create Account</h1>
+      <p class="subtitle">Set up your photography workspace.</p>
+
+      <div id="alert" class="alert error" style="display:none;"></div>
+
+      <form id="registerForm" class="auth-form">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required placeholder="Jane Doe">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="you@example.com">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required minlength="6" placeholder="At least 6 characters">
+
+        <label for="role">Role</label>
+        <select id="role">
+          <option value="ADMIN">Admin / Lead</option>
+          <option value="TEAM_MEMBER">Team Member</option>
+        </select>
+
+        <button type="submit" style="width:100%;">Create Account&nbsp; →</button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="index.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideAlert("alert");
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value;
+  try {
+    const data = await apiRequest("/api/auth/register", { method:"POST", body:{ name, email, password, role } });
+    Auth.setSession(data.token, { id:data.userId, name:data.name, email:data.email, role:data.role });
+    window.location.href = data.role === "ADMIN" ? "admin-dashboard.html" : "team-dashboard.html";
+  } catch (err) {
+    showAlert("alert", err.message);
+  }
+});
+</script>
+</body>
+</html>
