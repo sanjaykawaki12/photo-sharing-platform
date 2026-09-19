@@ -1,5 +1,5 @@
 // Base URL of the Spring Boot backend. Change this if you deploy the API elsewhere.
-const API_BASE = window.API_BASE || "http://localhost:8080";
+const API_BASE = window.API_BASE || "";
 
 const Auth = {
   getToken: () => localStorage.getItem("psp_token"),
